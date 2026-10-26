@@ -24,6 +24,7 @@
   a { color: var(--accent); }
   label { display: block; margin-bottom: 16px; font-weight: 600; }
   input { display: block; width: 100%; margin-top: 6px; padding: 12px; font: inherit; border: 1px solid var(--muted); border-radius: 8px; background: var(--bg); color: var(--fg); }
+  .hint { margin: -8px 0 16px; font-size: 0.9rem; color: var(--muted); }
   button.cta { border: 0; cursor: pointer; font: inherit; font-weight: 700; margin: 8px 0 0; }
 </style>
 </head>
@@ -39,7 +40,8 @@
   <form id="sign-form" class="card">
     <label>Full name<input name="name" required autocomplete="name"></label>
     <label>University email<input name="email" type="email" required autocomplete="email" placeholder="you@city.ac.uk"></label>
-    <label>Course<input name="course" required></label>
+    <label>Course<input name="course" required aria-describedby="course-why"></label>
+    <p id="course-why" class="hint">Why we ask: knowing which courses our members are on lets us plan some events just for your course, like practice for the presentations and interviews you'll actually face.</p>
     <!-- honeypot: hidden from people, bots fill it in -->
     <input name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute; left:-9999px">
     <button class="cta" type="submit">Sign</button>
