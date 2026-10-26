@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Public Speaking Society</title>
+<meta name="description" content="A new public speaking society at City St George's. Sign to help us start it.">
+<style>
+  :root { --bg: #fffaf3; --fg: #1d1d1f; --muted: #5a5a60; --accent: #c2410c; --card: #ffffff; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #16161a; --fg: #f2f2f2; --muted: #a8a8b0; --accent: #fb923c; --card: #222228; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 18px/1.6 system-ui, -apple-system, Segoe UI, Roboto, sans-serif; background: var(--bg); color: var(--fg); }
+  main { max-width: 680px; margin: 0 auto; padding: 48px 16px; }
+  h1 { font-size: 2.4rem; line-height: 1.15; margin: 0 0 12px; }
+  h2 { margin-top: 40px; }
+  .lead { font-size: 1.2rem; color: var(--muted); }
+  .cta { display: inline-block; margin: 24px 0; padding: 16px 28px; background: var(--accent); color: #fff; font-weight: 700; text-decoration: none; border-radius: 10px; }
+  .cta:focus-visible { outline: 3px solid var(--fg); outline-offset: 3px; }
+  .card { background: var(--card); border-radius: 12px; padding: 20px; margin: 12px 0; }
+  ul { padding-left: 20px; }
+  footer { margin-top: 48px; color: var(--muted); font-size: 0.9rem; }
+  a { color: var(--accent); }
+  label { display: block; margin-bottom: 16px; font-weight: 600; }
+  input { display: block; width: 100%; margin-top: 6px; padding: 12px; font: inherit; border: 1px solid var(--muted); border-radius: 8px; background: var(--bg); color: var(--fg); }
+  button.cta { border: 0; cursor: pointer; font: inherit; font-weight: 700; margin: 8px 0 0; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Public Speaking Society</h1>
+  <p class="lead">A friendly place at City St George's to practise speaking, so presentations, interviews and placements stop being scary.</p>
+
+  <a class="cta" href="#sign">Sign to help us start</a>
+  <p>We need 20 signatures from current City St George's students to apply to the Students' Union. Signing takes 30 seconds and doesn't commit you to anything. Signers get the first invite to our launch session.</p>
+
+  <h2 id="sign">Sign here</h2>
+  <form id="sign-form" class="card">
+    <label>Full name<input name="name" required autocomplete="name"></label>
+    <label>University email<input name="email" type="email" required autocomplete="email" placeholder="you@city.ac.uk"></label>
+    <label>Course<input name="course" required></label>
+    <!-- honeypot: hidden from people, bots fill it in -->
+    <input name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute; left:-9999px">
+    <button class="cta" type="submit">Sign</button>
+    <p id="sign-status" role="status"></p>
+  </form>
+
+  <h2>What we'll do</h2>
+  <div class="card">
+    <ul>
+      <li>Short, low-pressure speaking practice with friendly feedback</li>
+      <li>Impromptu "Table Topics" games to beat nerves</li>
+      <li>Mock interviews and presentation practice</li>
+      <li>Debate nights, guest speakers and an end-of-term speech contest</li>
+    </ul>
+  </div>
+
+  <h2>Follow us</h2>
+  <!-- Replace the two # links with your account URLs -->
+  <p><a href="#">Instagram</a> · <a href="#">TikTok</a></p>
+
+  <footer>Run by students at City St George's, University of London. Not yet an official Students' Union society.</footer>
+</main>
+<script>
+  // Web app URL from Apps Script (Deploy > New deployment)
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbywoeXxYXWJcTC9f1Cy4g5M7h68RLHvPnoeMahgPesir3ItBy4A8xAu83XlOtuWw_NBjA/exec';
+  const form = document.getElementById('sign-form');
+  const status = document.getElementById('sign-status');
+  const DOMAINS = ['city.ac.uk', 'citystgeorges.ac.uk', 'sgul.ac.uk', 'st-georges.ac.uk']; // keep in sync with Code.gs
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const domain = form.email.value.trim().toLowerCase().split('@')[1] || '';
+    if (!DOMAINS.some(d => domain === d || domain.endsWith('.' + d))) {
+      status.textContent = "Please use your City St George's university email.";
+      return;
+    }
+    const button = form.querySelector('button');
+    button.disabled = true;
+    status.textContent = 'Sending...';
+    try {
+      // no-cors: Google's redirect blocks reading the reply, so we send and trust Code.gs to validate and dedupe
+      await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: new URLSearchParams(new FormData(form)) });
+      status.textContent = 'Thanks for signing! We will email you about the launch session.';
+      form.reset();
+    } catch {
+      status.textContent = 'Could not reach the server. Check your connection and try again.';
+    }
+    button.disabled = false;
+  });
+</script>
+</body>
+</html>
